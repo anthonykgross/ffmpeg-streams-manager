@@ -3,3 +3,5 @@
 inputs/*
 !inputs/.gitkeep
 __pycache__
+*.csv
+*.pyc

@@ -36,9 +36,10 @@ music = ffmpeg.input('inputs/music.mp3')
 en = ffmpeg.input('inputs/en.srt')
 es = ffmpeg.input('inputs/es.srt')
 
-probe = File("westworld.mkv")
-probe = File("inputs/music.mp3")
-probe = File("inputs/en.srt")
+# probe = File("westworld.mkv")
+probe = File("inputs/sintel.mp4")
+# probe = File("inputs/music.mp3")
+# probe = File("inputs/en.srt")
 # parsed = json.loads(json.dumps(probe))
 
 # print(json.dumps(parsed, indent=4, sort_keys=True))
