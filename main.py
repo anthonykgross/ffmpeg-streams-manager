@@ -1,48 +1,21 @@
-import ffmpeg
-from tqdm import tqdm
-import requests
-import os
-import json
 from models import *
 
+# input1 = Input("westworld.mkv", ['fre'])
+# input2 = Input("southpark.mkv")
+input1 = Input("inputs/sintel.mp4")
+input2 = Input("inputs/es.srt")
+input3 = Input("inputs/en.srt")
 
-def init_inputs():
-    video = "http://www.peach.themazzone.com/durian/movies/sintel-1024-surround.mp4"
-    music = "https://www.dropbox.com/s/xiiub9bmm5rd71l/Kasger%20-%20Out%20Here%20_NCS%20Release_.mp3?dl=1"
-    en = "https://durian.blender.org/wp-content/content/subtitles/sintel_en.srt"
-    es = "https://durian.blender.org/wp-content/content/subtitles/sintel_es.srt"
+input1.get_media().get_video_streams()[0].language = 'eng'
+input2.get_media().get_subtitle_streams()[0].language = 'es'
+input3.get_media().get_subtitle_streams()[0].language = 'eng'
 
-    if not os.path.isfile('inputs/en.srt'):
-        download(en, 'inputs/en.srt')
-    if not os.path.isfile('inputs/es.srt'):
-        download(es, 'inputs/es.srt')
-    if not os.path.isfile('inputs/music.mp3'):
-        download(music, 'inputs/music.mp3')
-    if not os.path.isfile('inputs/sintel.mp4'):
-        download(video, 'inputs/sintel.mp4')
+# input1.debug()
+# input2.debug()
 
-
-def download (url, filename):
-    response = requests.get(url, stream=True)
-    with open(filename, "wb") as handle:
-        for data in tqdm(response.iter_content()):
-            handle.write(data)
-
-
-init_inputs()
-
-media = ffmpeg.input('inputs/sintel.mp4')
-music = ffmpeg.input('inputs/music.mp3')
-en = ffmpeg.input('inputs/en.srt')
-es = ffmpeg.input('inputs/es.srt')
-
-# probe = File("westworld.mkv")
-probe = File("inputs/sintel.mp4")
-# probe = File("inputs/music.mp3")
-# probe = File("inputs/en.srt")
-# parsed = json.loads(json.dumps(probe))
-
-# print(json.dumps(parsed, indent=4, sort_keys=True))
-
-# Generate output with 5 streams
-# outfile = ffmpeg.output(media, music, en, es, 'test-out.mkv').run()
+converter = H264Converter('plop.mkv')
+converter.add_input(input1)
+converter.add_input(input2)
+converter.add_input(input3)
+converter.debug()
+# converter.run()
