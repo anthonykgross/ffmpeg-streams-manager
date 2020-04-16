@@ -1,5 +1,5 @@
 import unittest
-from ffmpeg.nodes import FilterableStream
+from ffmpeg.nodes import FilterableStream, OutputStream
 from ffmpeg_streams_manager import *
 from pathlib import Path
 
@@ -133,7 +133,7 @@ class TestConverter(unittest.TestCase):
             ]
         )
 
-    def test_get_streams(self):
+    def test_get_final_streams(self):
         input1 = Input('fixtures/sintel.mp4')
         input2 = Input('fixtures/en.srt')
         input3 = Input('fixtures/es.srt')
@@ -164,6 +164,77 @@ class TestConverter(unittest.TestCase):
         self.assertEqual(streams[3].language, 'und')
         self.assertEqual(streams[3].codec, 'subrip')
         self.assertEqual(streams[3].map, 0)
+
+    def test_get_final_video_streams(self):
+        input1 = Input('fixtures/sintel.mp4')
+        input2 = Input('fixtures/en.srt')
+        input3 = Input('fixtures/es.srt')
+
+        converter = Converter('file.mkv')
+        converter.add_input(input1)
+        converter.add_input(input2)
+        converter.add_input(input3)
+
+        streams = converter.get_final_video_streams()
+        self.assertEqual(len(streams), 1)
+
+    def test_get_final_audio_streams(self):
+        input1 = Input('fixtures/sintel.mp4')
+        input2 = Input('fixtures/en.srt')
+        input3 = Input('fixtures/es.srt')
+        input4 = Input('fixtures/music.mp3')
+
+        converter = Converter('file.mkv')
+        converter.add_input(input1)
+        converter.add_input(input2)
+        converter.add_input(input3)
+        converter.add_input(input4)
+
+        streams = converter.get_final_audio_streams()
+        self.assertEqual(len(streams), 2)
+
+    def test_get_final_subtitle_streams(self):
+        input1 = Input('fixtures/sintel.mp4')
+        input2 = Input('fixtures/en.srt')
+        input3 = Input('fixtures/es.srt')
+
+        converter = Converter('file.mkv')
+        converter.add_input(input1)
+        converter.add_input(input2)
+        converter.add_input(input3)
+
+        streams = converter.get_final_subtitle_streams()
+        self.assertEqual(len(streams), 2)
+
+    def test_get_ffmpeg_output(self):
+        input1 = Input('fixtures/sintel.mp4')
+        input2 = Input('fixtures/en.srt')
+        input3 = Input('fixtures/es.srt')
+
+        converter = Converter('file.mkv')
+        converter.add_input(input1)
+        converter.add_input(input2)
+        converter.add_input(input3)
+
+        self.assertIsInstance(converter.get_ffmpeg_output(), OutputStream)
+
+    def test_debug(self):
+        input1 = Input('fixtures/sintel.mp4')
+        input2 = Input('fixtures/en.srt')
+        input3 = Input('fixtures/es.srt')
+
+        converter = Converter('file.mkv')
+        converter.add_input(input1)
+        converter.add_input(input2)
+        converter.add_input(input3)
+        converter.debug()
+
+    def test_run(self):
+        input = Input('fixtures/sintel.mp4')
+        converter = Converter('fixtures/output.mp4')
+        converter.add_input(input)
+        converter.run()
+        converter.__repr__()
 
 
 class TestH265Converter(unittest.TestCase):
@@ -248,8 +319,8 @@ class TestInput(unittest.TestCase):
         self.assertEqual(streams[1].codec, 'ass')
         self.assertEqual(streams[1].map, 3)
 
-    def test_mapping_mixes(self):
-        input = Input('fixtures/sintel-multi.mkv', ['eng', 3])
+    def test_mapping_type(self):
+        input = Input('fixtures/sintel-multi.mkv', ['subtitle', 'v', 'sound'])
         self.assertEqual(input.get_final_maps(), [0, 1, 2, 3])
 
         streams = input.get_final_streams()
@@ -274,6 +345,42 @@ class TestInput(unittest.TestCase):
         self.assertEqual(streams[3].codec, 'ass')
         self.assertEqual(streams[3].map, 3)
 
+    def test_mapping_mixes(self):
+        input = Input('fixtures/sintel-multi.mkv', ['sub', 'eng', 3])
+        self.assertEqual(input.get_final_maps(), [0, 1, 2, 3])
+
+        streams = input.get_final_streams()
+
+        self.assertIsInstance(streams[0], VideoStream)
+        self.assertEqual(streams[0].language, 'eng')
+        self.assertEqual(streams[0].codec, 'h264')
+        self.assertEqual(streams[0].map, 0)
+
+        self.assertIsInstance(streams[1], AudioStream)
+        self.assertEqual(streams[1].language, 'eng')
+        self.assertEqual(streams[1].codec, 'vorbis')
+        self.assertEqual(streams[1].map, 1)
+
+        self.assertIsInstance(streams[2], SubtitleStream)
+        self.assertEqual(streams[2].language, 'eng')
+        self.assertEqual(streams[2].codec, 'ass')
+        self.assertEqual(streams[2].map, 2)
+
+        self.assertIsInstance(streams[3], SubtitleStream)
+        self.assertEqual(streams[3].language, 'es')
+        self.assertEqual(streams[3].codec, 'ass')
+        self.assertEqual(streams[3].map, 3)
+
+    def test_wrong_mapping(self):
+        input = Input('fixtures/sintel-multi.mkv', 'blabla')
+        self.assertEqual(input.get_final_maps(), [])
+
+        streams = input.get_final_streams()
+        self.assertEqual(len(streams), 0)
+
+    def test_debug(self):
+        input = Input('fixtures/sintel-multi.mkv')
+        input.debug()
 
 class TestMedia(unittest.TestCase):
     def test_init_video(self):

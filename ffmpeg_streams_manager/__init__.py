@@ -1,5 +1,30 @@
+from enum import Enum
 from pathlib import Path
 import ffmpeg
+
+
+class StreamType(Enum):
+    V = 0
+    VIDEO = 0
+    VIDEOS = 0
+
+    A = 1
+    AUDIO = 1
+    AUDIOS = 1
+    SOUND = 1
+    SOUNDS = 1
+
+    S = 2
+    SUB = 2
+    SUBTITLE = 2
+    SUBTITLES = 2
+
+    @classmethod
+    def key_exists(cls, key):
+        for k, member in cls.__members__.items():
+            if key == k:
+                return True
+        return False
 
 
 class PrintableMixin(object):
@@ -155,6 +180,23 @@ class Input(PrintableMixin):
                 maps.append(map)
         return maps
 
+    def __get_maps_by_type(self, stream_type):
+        maps = []
+        if isinstance(stream_type, StreamType):
+            cls = None
+            if stream_type.value == 0:
+                cls = VideoStream
+            if stream_type.value == 1:
+                cls = AudioStream
+            if stream_type.value == 2:
+                cls = SubtitleStream
+
+            for map in self.__media.get_streams():
+                stream = self.__media.get_streams()[map]
+                if isinstance(stream, cls):
+                    maps.append(map)
+        return maps
+
     def get_final_streams(self):
         streams = []
         for map in self.get_final_maps():
@@ -169,6 +211,11 @@ class Input(PrintableMixin):
         if isinstance(self.__mapping, list):
             maps = []
             for val in self.__mapping:
+
+                upper_val = str(val).upper()
+                if StreamType.key_exists(upper_val):
+                    maps += self.__get_maps_by_type(StreamType[upper_val])
+
                 if isinstance(val, int):
                     maps += [val]
                 if isinstance(val, str):
