@@ -1,15 +1,23 @@
 # FFmpeg Streams Manager
 
-# Installation
+## How to install
+### From source
 ```shell script
 sudo apt-get install ffmpeg
-pip install -r requirements.txt
+python setup.py bdist_wheel
+pip install -I dist/*.whl
 ```
 
-# Documentation
-[Examples](examples)
+### From pip
+```shell script
+sudo apt-get install ffmpeg
+pip install ffmpeg-streams-manager
+```
 
-## basic example
+## Documentation
+More [Examples](examples) available
+
+### basic example
 ```python
 from ffmpeg_streams_manager import *
 
@@ -32,3 +40,18 @@ converter.add_input(input2)
 converter.add_input(input3)
 converter.run()
 ```
+
+## Additional Resources
+- [ffmpeg-python](https://github.com/kkroening/ffmpeg-python)
+- [FFmpeg Homepage](https://ffmpeg.org/)
+- [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html)
+
+## Creator
+**Anthony K GROSS**
+- <http://anthonykgross.fr>
+- <https://twitter.com/anthonykgross>
+- <https://github.com/anthonykgross>
+- <http://www.twitch.tv/anthonykgross>
+
+## Copyright and license
+Code and documentation copyright 2020. Code released under [the MIT license](LICENSE).

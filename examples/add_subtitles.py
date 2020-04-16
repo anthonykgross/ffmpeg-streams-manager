@@ -9,7 +9,7 @@ input2.get_media().get_subtitle_streams()[0].language = 'eng'
 input3 = Input("../fixtures/es.srt")
 input3.get_media().get_subtitle_streams()[0].language = 'es'
 
-converter = Converter('../fixtures/sintel-multi.mkv')
+converter = Converter('../fixtures/output.mkv')
 converter.add_input(input1)
 converter.add_input(input2)
 converter.add_input(input3)
