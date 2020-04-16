@@ -1,20 +1,17 @@
 import unittest
 from ffmpeg_streams_manager import *
 from pathlib import Path
-from tests.utils import init_fixtures
-
-init_fixtures()
 
 
 class TestInput(unittest.TestCase):
     def test_init(self):
-        input = Input('tests/fixtures/sintel.mp4')
+        input = Input('fixtures/sintel.mp4')
         self.assertEqual(input.get_mapping(), '*')
 
 
 class TestMedia(unittest.TestCase):
     def test_init_video(self):
-        path = 'tests/fixtures/sintel.mp4'
+        path = 'fixtures/sintel.mp4'
         media = Media(path)
         self.assertEqual(str(media.get_path()), path)
         self.assertIsInstance(media.get_path(), Path)
@@ -36,7 +33,7 @@ class TestMedia(unittest.TestCase):
         self.assertEqual(streams[1].map, 1)
 
     def test_init_audio(self):
-        path = 'tests/fixtures/music.mp3'
+        path = 'fixtures/music.mp3'
         media = Media(path)
         self.assertEqual(str(media.get_path()), path)
         self.assertIsInstance(media.get_path(), Path)
@@ -53,7 +50,7 @@ class TestMedia(unittest.TestCase):
         self.assertEqual(streams[0].map, 0)
 
     def test_init_subtitle(self):
-        path = 'tests/fixtures/es.srt'
+        path = 'fixtures/es.srt'
         media = Media(path)
         self.assertEqual(str(media.get_path()), path)
         self.assertIsInstance(media.get_path(), Path)
@@ -72,7 +69,7 @@ class TestMedia(unittest.TestCase):
     def test_wrong_file(self):
         with self.assertRaises(Exception):
             # File doesn't exist
-            path = 'tests/fixtures/sintel.mp3'
+            path = 'fixtures/sintel.mp3'
             media = Media(path)
 
 

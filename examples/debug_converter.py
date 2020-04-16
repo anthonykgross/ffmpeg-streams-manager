@@ -7,8 +7,8 @@ wget https://durian.blender.org/wp-content/content/subtitles/sintel_es.srt -O es
 wget https://www.dropbox.com/s/xiiub9bmm5rd71l/Kasger%20-%20Out%20Here%20_NCS%20Release_.mp3?dl=1 -O music.mp3
 """
 input1 = Input("sintel.mp4")
-input2 = Input("en.srt")
-input3 = Input("es.srt")
+input2 = Input("../fixtures/en.srt")
+input3 = Input("../fixtures/es.srt")
 
 converter = Converter('sintel.mkv')
 converter.add_input(input1)

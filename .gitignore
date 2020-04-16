@@ -3,6 +3,12 @@
 *.mp3
 *.mkv
 *.csv
+!en.srt
+!es.srt
+!music.mp3
+!sintel.mp4
+!sintel-multi.mkv
+
 
 .idea
 
