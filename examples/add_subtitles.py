@@ -1,16 +1,3 @@
-# FFmpeg Streams Manager
-
-# Installation
-```shell script
-sudo apt-get install ffmpeg
-pip install -r requirements.txt
-```
-
-# Documentation
-[Examples](examples)
-
-## basic example
-```python
 from ffmpeg_streams_manager import *
 
 """
@@ -30,5 +17,5 @@ converter = Converter('sintel.mkv')
 converter.add_input(input1)
 converter.add_input(input2)
 converter.add_input(input3)
+# converter.debug()
 converter.run()
-```

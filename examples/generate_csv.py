@@ -1,4 +1,4 @@
-from models import *
+from ffmpeg_streams_manager import *
 from pathlib import Path
 import csv
 
@@ -18,7 +18,7 @@ columns = [
     'subtitle_language'
 ]
 
-filename = 'series.csv'
+filename = 'output.csv'
 with open(filename, 'w+', encoding='utf-8') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
     writer.writerow(columns)
