@@ -4,18 +4,16 @@ import ffmpeg
 
 class PrintableMixin(object):
     def __str__(self):
-        return str(self.__dict__).replace('_'+self.__class__.__name__, '')
+        return str(self.__dict__).replace('_' + self.__class__.__name__, '')
 
     def __repr__(self):
         return self.__str__()
 
 
 class Converter(PrintableMixin):
-    def __init__(self, output):
-        self.__kwargs = {
-            'map_metadata': '-1'
-        }
-        self.__args = ()
+    def __init__(self, output, *args, **kwargs):
+        self.__args = args
+        self.__kwargs = kwargs
         self.__inputs = []
         self.__output = Path(output)
 
@@ -30,6 +28,11 @@ class Converter(PrintableMixin):
     def add_input(self, input):
         if isinstance(input, Input):
             self.__inputs.append(input)
+
+    def clean_inputs_metadata(self):
+        self.add_kwargs(**{
+            'map_metadata': '-1'
+        })
 
     def __init_metadata(self):
         if self.__output.suffix == '.mkv':
@@ -58,8 +61,12 @@ class Converter(PrintableMixin):
         if isinstance(stream, SubtitleStream):
             metadata_type = 's'
 
-        if metadata_type is not None and stream.language is not None:
-            self.add_kwargs(**{'metadata:s:'+metadata_type+':'+str(index): 'language='+stream.language})
+        if metadata_type is not None:
+            key = 'metadata:s:%s:%s' % (metadata_type, index)
+            value = 'language=%s' % stream.language
+            self.add_kwargs(**{
+                key: value
+            })
 
     def __init_ffmpeg_inputs(self):
         for index in range(0, len(self.__inputs)):
@@ -137,13 +144,10 @@ class Input(PrintableMixin):
     def get_media(self):
         return self.__media
 
-    def get_mapping(self):
-        return self.__mapping
-
     def get_ffmpeg_input(self):
         return self.__ffmpeg_input
 
-    def get_maps_by_language(self, language):
+    def __get_maps_by_language(self, language):
         maps = []
         for map in self.__media.get_streams():
             stream = self.__media.get_streams()[map]
@@ -168,7 +172,7 @@ class Input(PrintableMixin):
                 if isinstance(val, int):
                     maps += [val]
                 if isinstance(val, str):
-                    maps += self.get_maps_by_language(val)
+                    maps += self.__get_maps_by_language(val)
 
             # remove duplicate entries
             return list(set(maps))
@@ -248,7 +252,7 @@ class Media(PrintableMixin):
 
 class Stream(PrintableMixin):
     def __init__(self):
-        self.language = None
+        self.language = 'und'
         self.map = None
         self.codec = None
 
