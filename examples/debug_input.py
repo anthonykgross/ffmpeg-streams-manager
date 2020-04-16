@@ -7,16 +7,19 @@ wget https://durian.blender.org/wp-content/content/subtitles/sintel_es.srt -O es
 wget https://www.dropbox.com/s/xiiub9bmm5rd71l/Kasger%20-%20Out%20Here%20_NCS%20Release_.mp3?dl=1 -O music.mp3
 """
 input1 = Input("sintel.mp4")
-input2 = Input("en.srt")
-input3 = Input("es.srt")
-
-input1.get_media().get_video_streams()[0].language = 'eng'
-input2.get_media().get_subtitle_streams()[0].language = 'es'
-input3.get_media().get_subtitle_streams()[0].language = 'eng'
-
-converter = Converter('sintel.mkv')
-converter.add_input(input1)
-converter.add_input(input2)
-converter.add_input(input3)
-# converter.debug()
-converter.run()
+input1.debug()
+"""
+Input : sintel-1024-surround.mp4
+  Mapping :
+    {'language': 'und', 'map': 0, 'codec': 'h264'}
+    {'language': 'eng', 'map': 1, 'codec': 'aac'}
+  ----  debug ---- 
+  Video streams :
+    {'language': 'und', 'map': 0, 'codec': 'h264'}
+  Audio streams :
+    {'language': 'eng', 'map': 1, 'codec': 'aac'}
+  Subtitle streams :
+"""
+"""
+This result means this file has 2 streams : 1 video and 1 audio (0 subtitles)
+"""

@@ -197,6 +197,7 @@ class Input(PrintableMixin):
         for stream in self.__media.get_subtitle_streams():
             print('    %s' % stream)
 
+
 class Media(PrintableMixin):
     def __init__(self, filename):
         self.__path = Path(filename)
@@ -204,18 +205,21 @@ class Media(PrintableMixin):
         self.refresh()
 
     def refresh(self):
-        probe = ffmpeg.probe(str(self.__path))
-        for stm in probe['streams']:
-            stream = None
-            if stm['codec_type'] == 'video':
-                stream = VideoStream()
-            if stm['codec_type'] == 'audio':
-                stream = AudioStream()
-            if stm['codec_type'] == 'subtitle':
-                stream = SubtitleStream()
-            if stream is not None:
-                stream.from_json(stm)
-                self.__streams[stream.map] = stream
+        if self.__path.exists():
+            probe = ffmpeg.probe(str(self.__path))
+            for stm in probe['streams']:
+                stream = None
+                if stm['codec_type'] == 'video':
+                    stream = VideoStream()
+                if stm['codec_type'] == 'audio':
+                    stream = AudioStream()
+                if stm['codec_type'] == 'subtitle':
+                    stream = SubtitleStream()
+                if stream is not None:
+                    stream.from_json(stm)
+                    self.__streams[stream.map] = stream
+        else:
+            raise Exception('Invalid filename')
 
     def get_path(self):
         return self.__path

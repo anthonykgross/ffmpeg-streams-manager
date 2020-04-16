@@ -1,7 +1,12 @@
+*.srt
+*.mp4
+*.mp3
 *.mkv
-.idea
-inputs/*
-!inputs/.gitkeep
-__pycache__
 *.csv
-*.pyc
+
+.idea
+
+__pycache__
+dist
+build
+ffmpeg_streams_manager.egg-info
