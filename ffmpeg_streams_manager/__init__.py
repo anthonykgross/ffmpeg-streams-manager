@@ -93,12 +93,13 @@ class Converter(PrintableMixin):
     def get_final_subtitle_streams(self):
         return self.__get_final_streams_by_type(SubtitleStream)
 
-    def run(self):
+    def get_ffmpeg_output(self):
         self.__init_metadata()
         self.__init_ffmpeg_inputs()
-        self.add_args(str(self.__output))
+        return ffmpeg.output(*self.__args, str(self.__output), **self.__kwargs)
 
-        ffmpeg.output(*self.__args, **self.__kwargs).run()
+    def run(self):
+        self.get_ffmpeg_output().run()
 
     def debug(self):
         self.debug_result()

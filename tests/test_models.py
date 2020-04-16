@@ -66,6 +66,38 @@ class TestMedia(unittest.TestCase):
         self.assertEqual(streams[0].codec, 'subrip')
         self.assertEqual(streams[0].map, 0)
 
+    def test_init_multi(self):
+        path = 'fixtures/sintel-multi.mkv'
+        media = Media(path)
+        self.assertEqual(str(media.get_path()), path)
+        self.assertIsInstance(media.get_path(), Path)
+        self.assertEqual(len(media.get_streams()), 4)
+        self.assertEqual(len(media.get_video_streams()), 1)
+        self.assertEqual(len(media.get_audio_streams()), 1)
+        self.assertEqual(len(media.get_subtitle_streams()), 2)
+
+        streams = media.get_streams()
+
+        self.assertIsInstance(streams[0], VideoStream)
+        self.assertEqual(streams[0].language, 'eng')
+        self.assertEqual(streams[0].codec, 'h264')
+        self.assertEqual(streams[0].map, 0)
+
+        self.assertIsInstance(streams[1], AudioStream)
+        self.assertEqual(streams[1].language, 'eng')
+        self.assertEqual(streams[1].codec, 'vorbis')
+        self.assertEqual(streams[1].map, 1)
+
+        self.assertIsInstance(streams[2], SubtitleStream)
+        self.assertEqual(streams[2].language, 'eng')
+        self.assertEqual(streams[2].codec, 'ass')
+        self.assertEqual(streams[2].map, 2)
+
+        self.assertIsInstance(streams[3], SubtitleStream)
+        self.assertEqual(streams[3].language, 'es')
+        self.assertEqual(streams[3].codec, 'ass')
+        self.assertEqual(streams[3].map, 3)
+
     def test_wrong_file(self):
         with self.assertRaises(Exception):
             # File doesn't exist
