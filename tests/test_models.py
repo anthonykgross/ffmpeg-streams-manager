@@ -371,6 +371,21 @@ class TestInput(unittest.TestCase):
         self.assertEqual(streams[3].codec, 'ass')
         self.assertEqual(streams[3].map, 3)
 
+    def test_mapping_complex_filter(self):
+        input = Input('fixtures/sintel-multi.mkv', ['s:es', 'v:eng:0'])
+        self.assertEqual(input.get_final_maps(), [0, 3])
+        streams = input.get_final_streams()
+
+        self.assertIsInstance(streams[0], VideoStream)
+        self.assertEqual(streams[0].language, 'eng')
+        self.assertEqual(streams[0].codec, 'h264')
+        self.assertEqual(streams[0].map, 0)
+
+        self.assertIsInstance(streams[1], SubtitleStream)
+        self.assertEqual(streams[1].language, 'es')
+        self.assertEqual(streams[1].codec, 'ass')
+        self.assertEqual(streams[1].map, 3)
+
     def test_wrong_mapping(self):
         input = Input('fixtures/sintel-multi.mkv', 'blabla')
         self.assertEqual(input.get_final_maps(), [])
@@ -381,6 +396,7 @@ class TestInput(unittest.TestCase):
     def test_debug(self):
         input = Input('fixtures/sintel-multi.mkv')
         input.debug()
+
 
 class TestMedia(unittest.TestCase):
     def test_init_video(self):
