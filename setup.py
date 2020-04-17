@@ -1,13 +1,19 @@
 import setuptools
 from pip.req import parse_requirements
+from textwrap import dedent
+
+long_description = dedent(
+    '''\
+    ffmpeg-streams-manager : Manage your media streams easily with Python
+    =====================================================================
+    :Github: https://github.com/anthonykgross/ffmpeg-streams-manager
+'''
+)
 
 """
 python3 setup.py bdist_wheel
 pip3 install -I dist/
 """
-
-with open("README.md", "r") as fh:
-    long_description = fh.read()
 
 setuptools.setup(
     name="ffmpeg-streams-manager",
@@ -16,7 +22,6 @@ setuptools.setup(
     author_email="anthony.k.gross@gmail.com",
     description="Manage your streams via ffmpeg",
     long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/anthonykgross/ffmpeg-streams-manager",
     packages=setuptools.find_packages(),
     classifiers=[
